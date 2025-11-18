@@ -7,7 +7,8 @@
 # code easily while grading your problem set.
 
 import random
-import constants as c
+from game import constants as c
+
 
 #######
 # Task 1a #

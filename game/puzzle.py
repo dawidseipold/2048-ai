@@ -1,7 +1,7 @@
 from tkinter import Frame, Label, CENTER
 import random
-import logic
-import constants as c
+from game import constants as c, logic
+
 
 def gen():
     return random.randint(0, c.GRID_LEN - 1)
