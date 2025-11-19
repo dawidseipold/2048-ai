@@ -1,5 +1,5 @@
 # scripts/quick_test_state.py
-from game.state import GameState
+from src.game.state import GameState
 
 def main():
     s = GameState(seed=42)

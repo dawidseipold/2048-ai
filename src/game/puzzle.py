@@ -1,6 +1,6 @@
 from tkinter import Frame, Label, CENTER
 import random
-from game import constants as c, logic
+from src.game import constants as c, logic
 
 
 def gen():

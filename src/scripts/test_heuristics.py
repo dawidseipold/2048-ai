@@ -1,5 +1,5 @@
-from heuristics.evaluate import evaluate
-from heuristics.weights_loader import load_weights
+from src.heuristics.evaluate import evaluate
+from src.heuristics.weights_loader import load_weights
 
 def main():
     w = load_weights("conservative")
