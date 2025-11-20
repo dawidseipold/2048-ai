@@ -1,0 +1,6 @@
+seed,final_score,max_tile,moves_count,duration_s,end_state
+1000,13544,1024,820,0.25,lose
+1001,3988,256,331,0.101,lose
+1002,7856,512,551,0.172,lose
+1003,3884,256,316,0.097,lose
+1004,9916,512,684,0.208,lose
