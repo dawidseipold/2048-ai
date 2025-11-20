@@ -1,4 +1,3 @@
-# scripts/run_experiment.py
 from __future__ import annotations
 
 import argparse
@@ -9,8 +8,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Tuple
 
-# Importujemy agenta i stan gry
 from src.agents.greedy import GreedyAgent  # Później: ExpectimaxAgent
+from src.agents.expectimax import ExpectimaxAgent
 from src.game.state import GameState
 from src.heuristics.weights_loader import load_weights  # Ładowanie wag
 from src.utils.logger import GameLogger  # Logger dla pojedynczej gry
@@ -100,21 +99,34 @@ def main() -> None:
         action="store_true",
         help="If set, saves full step-by-step logs for each game.",
     )
+    parser.add_argument(
+        "--max_depth",
+        type=int,
+        default=3
+    )
+    parser.add_argument(
+        "--time_limit_ms",
+        type=int,
+        default=60
+    )
+
     args = parser.parse_args()
 
     output_path = Path(args.output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    # Przygotowanie agenta (obecnie tylko Greedy, rozszerzysz o Expectimax)
     weights = load_weights(args.weights)
     agent_instance: Agent
+
     if args.agent_type == "greedy":
         agent_instance = GreedyAgent(weights=weights, fallback="up")
     elif args.agent_type == "expectimax":
-        # Tutaj zaimportujesz i zainicjujesz ExpectimaxAgent
-        # from src.agents.expectimax import ExpectimaxAgent
-        # agent_instance = ExpectimaxAgent(weights=weights, ...)
-        raise NotImplementedError("ExpectimaxAgent not yet implemented for experiments.")
+        agent_instance = ExpectimaxAgent(
+            weights = weights,
+            max_depth = args.max_depth,
+            time_limit_ms = args.time_limit_ms,
+            greedy_fallback = GreedyAgent(weights = weights, fallback = "up")
+        )
     else:
         raise ValueError(f"Unknown agent type: {args.agent_type}")
 
@@ -148,7 +160,6 @@ def main() -> None:
             writer.writerows(all_results)
         print(f"\nSummary results saved to {csv_filepath}")
 
-    # Opcjonalnie: proste statystyki podsumowujące
     if all_results:
         scores = [r["final_score"] for r in all_results if isinstance(r["final_score"], int)]
         max_tiles = [r["max_tile"] for r in all_results if isinstance(r["max_tile"], int)]
