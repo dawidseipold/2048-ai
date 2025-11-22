@@ -1,0 +1,150 @@
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+import argparse
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from typing import List, Dict, Any
+
+def plot_score_distribution(df: pd.DataFrame, ax: plt.Axes, title: str) -> None:
+    """Wykres dystrybucji wyników"""
+
+    sns.histplot(df['final_score'], kde = True, ax = ax, bins = 15, color = 'skyblue')
+    ax.set_title(f'Score Distribution ({title})')
+    ax.set_xlabel('Final Score')
+    ax.set_ylabel('Number of Games')
+
+def plot_max_tile_distribution(df: pd.DataFrame, ax: plt.Axes, title: str) -> None:
+    """Wykres dystrybucji maksymalnych kafelków"""
+
+    max_tile_counts = df['max_tile'].value_counts().sort_index()
+    sns.barplot(x = max_tile_counts.index, y = max_tile_counts.values, ax = ax, palette = 'viridis')
+
+    ax.set_title(f'Max Tile Distribution ({title})')
+    ax.set_xlabel('Max Tile Achieved')
+    ax.set_ylabel('Number of Games')
+
+def plot_move_time_distribution(df: pd.DataFrame, ax: plt.Axes, title: str) -> None:
+    """Wykres dystrybucji czasu decyzji ruchu"""
+
+    if 'avg_move_decision_time_s' in df.columns:
+        sns.histplot(df['avg_move_decision_time_s'], kde = True, ax = ax, bins = 15, color = 'salmon')
+        ax.set_title(f'Avg Move Decision Time Distribution ({title})')
+        ax.set_xlabel('Average Move Decision Time (s)')
+        ax.set_ylabel('Number of Games')
+    else:
+        ax.set_title(f'Move Time Data N/A ({title})')
+
+def create_summary_plots(csv_files: List[Path], output_dir: Path) -> None:
+    """Generuje zestawy wykresów dla podanych CSV"""
+
+    if not csv_files:
+        print("No CSV files provided to plot")
+        return
+
+    output_dir.mkdir(parents = True, exist_ok = True)
+
+    all_dataframes: Dict[str, pd.DataFrame] = {}
+
+    for csv_file in csv_files:
+        try:
+            df = pd.read_csv(csv_file)
+            label = csv_file.stem.replace('_summary', '')
+            all_dataframes[label] = df
+
+        except Exception as e:
+            print(f"Error reading {csv_file}: {e}")
+            continue
+
+    if not all_dataframes:
+        print("No valid dataframes to plot")
+        return
+
+    for label, df in all_dataframes.items():
+        fig, axes = plt.subplots(3, 1, figsize = (10, 15))
+        fig.suptitle(f"Experiment Results for: {label}", fontsize = 16)
+
+        plot_score_distribution(df, axes[0], label)
+        plot_max_tile_distribution(df, axes[1], label)
+        plot_move_time_distribution(df, axes[2], label)
+
+        plt.tight_layout(rect = [0, 0.03, 1, 0.95])
+        fig_path = output_dir / f"{label}_summary_plots.png"
+        plt.savefig(fig_path)
+        plt.close(fig)
+
+        print(f"Plots for {label} saved to {fig_path}")
+
+    if len(all_dataframes) > 1:
+        print("\nGenerating comparative plots...")
+
+        fig, ax = plt.subplots(figsize = (10, 6))
+        scores_for_boxplot = []
+        labels_for_boxplot = []
+
+        for label, df in all_dataframes.items():
+            scores_for_boxplot.append(df['final_score'])
+            labels_for_boxplot.append(label)
+
+        sns.boxplot(data = scores_for_boxplot, ax = ax)
+
+        ax.set_xticklabels(labels_for_boxplot, rotation = 45, ha = 'right')
+        ax.set_title("Comparison of Final Scores")
+        ax.set_xlabel('Experiment Configuration')
+        ax.set_ylabel('Final Score')
+
+        plt.tight_layout()
+        plt.savefig(output_dir / 'comparison_scores.png')
+        plt.close(fig)
+
+        print(f"Comparative scores plot saved to {output_dir / 'comparison_scores.png'}")
+
+        if all('avg_move_descision_time_s' in df.columns for df in all_dataframes.values()):
+            fig, ax = plt.subplots(figsize = (10, 6))
+            move_times_for_boxplot = []
+            labels_for_boxplot = []
+
+            for label, df in all_dataframes.items():
+                move_times_for_boxplot.append(df['avg_move_decision_time_s'])
+                labels_for_boxplot.append(label)
+
+            sns.boxplot(data = move_times_for_boxplot, ax = ax)
+            ax.set_xticklabels(labels_for_boxplot, rotation = 45, ha = 'right')
+            ax.set_title('Comparison of Average Move Decision Times')
+            ax.set_xlabel('Experiment Configuration')
+            ax.set_ylabel('Average Move Decision Time (s)')
+            plt.tight_layout()
+            plt.savefig(output_dir / 'comparison_avg_move_times.png')
+            plt.close(fig)
+            print(f"Comparative move times plot saved to {output_dir / 'comparison_avg_move_times.png'}")
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description = "Generate plots from 2048 experiment results CSV files"
+    )
+    parser.add_argument(
+        "csv_files",
+        nargs="+",
+        type=Path,
+        help="Path(s) to the CSV summary files generated by run_experiment.py."
+    )
+    parser.add_argument(
+        "--output_dir",
+        type=Path,
+        default="results/plots",
+        help="Directory to save the generated plots."
+    )
+    args = parser.parse_args()
+
+    create_summary_plots(args.csv_files, args.output_dir)
+    print("\nGenerating comparative plots...")
+
+if __name__ == "__main__":
+    main()
