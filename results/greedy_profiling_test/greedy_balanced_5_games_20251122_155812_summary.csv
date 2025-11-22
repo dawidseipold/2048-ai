@@ -1,0 +1,6 @@
+seed,final_score,max_tile,moves_count,game_duration_s,end_state,avg_move_decision_time_s,p95_move_decision_time_s
+100,11388,1024,672,0.317,lose,0.000419,0.000475
+101,6812,512,492,0.293,lose,0.000469,0.000758
+102,11640,1024,697,0.323,lose,0.000413,0.000484
+103,10412,1024,610,0.482,lose,0.00071,0.002277
+104,7452,512,518,0.284,lose,0.000483,0.000797

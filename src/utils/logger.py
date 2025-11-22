@@ -4,8 +4,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
-
+from typing import Dict, List, Any, Optional
 
 class GameLogger:
     def __init__(self, log_filepath: Path, agent_info: str = "unknown_agent"):
@@ -27,6 +26,7 @@ class GameLogger:
         max_tile: int,
         empty_cells: int,
         board: List[List[int]],
+        move_time_s: Optional[float] = None, # NOWE: opcjonalny czas ruchu
     ) -> None:
         """Loguje stan gry po każdym ruchu."""
         step_entry = {
@@ -38,6 +38,8 @@ class GameLogger:
             "empty_cells": empty_cells,
             "board": board,
         }
+        if move_time_s is not None: # Dodajemy tylko jeśli podano
+            step_entry["move_time_s"] = move_time_s
         self.log_data["steps"].append(step_entry)
 
     def __del__(self):

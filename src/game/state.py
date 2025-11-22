@@ -124,27 +124,30 @@ class GameState:
 
         before = [row[:] for row in b]  # szybka kopia
 
+        d1 = False # Inicjalizacja d1 i d2
+        d2 = False
+
         if move == "left":
             b, d1 = cover_up(b)
-            b, d2 = merge_gain(b, False)
+            b, d2 = merge_gain(b, d1) # Poprawka: przekazujemy d1
             b, _ = cover_up(b)
         elif move == "right":
             b = reverse(b)
             b, d1 = cover_up(b)
-            b, d2 = merge_gain(b, False)
+            b, d2 = merge_gain(b, d1) # Poprawka: przekazujemy d1
             b, _ = cover_up(b)
             b = reverse(b)
         elif move == "up":
             b = transpose(b)
             b, d1 = cover_up(b)
-            b, d2 = merge_gain(b, False)
+            b, d2 = merge_gain(b, d1) # Poprawka: przekazujemy d1
             b, _ = cover_up(b)
             b = transpose(b)
         elif move == "down":
             b = transpose(b)
             b = reverse(b)
             b, d1 = cover_up(b)
-            b, d2 = merge_gain(b, False)
+            b, d2 = merge_gain(b, d1) # Poprawka: przekazujemy d1
             b, _ = cover_up(b)
             b = reverse(b)
             b = transpose(b)
