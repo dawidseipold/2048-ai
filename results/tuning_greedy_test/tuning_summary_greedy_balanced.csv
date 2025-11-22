@@ -1,0 +1,6 @@
+config_name,weights,avg_score,max_score_overall,min_score_overall,avg_max_tile,2048_plus_count,2048_plus_percent
+config_001,"{""empty"": 227.0, ""mono"": 0.962, ""smooth"": 0.084, ""corner"": 927.299}",6312.0,8352,3952,426.67,0,0.0
+config_002,"{""empty"": 276.323, ""mono"": 0.86, ""smooth"": 0.11, ""corner"": 1022.729}",5277.33,7324,4168,341.33,0,0.0
+config_003,"{""empty"": 236.457, ""mono"": 1.104, ""smooth"": 0.119, ""corner"": 816.623}",11128.0,15152,7252,853.33,0,0.0
+config_004,"{""empty"": 244.332, ""mono"": 0.867, ""smooth"": 0.095, ""corner"": 898.797}",6678.67,8896,4208,426.67,0,0.0
+config_005,"{""empty"": 226.101, ""mono"": 1.113, ""smooth"": 0.098, ""corner"": 951.268}",7446.67,7764,7172,512.0,0,0.0

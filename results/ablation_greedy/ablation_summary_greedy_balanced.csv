@@ -1,0 +1,6 @@
+config_name,weights,avg_score,2048_plus_percent,ablated_feature
+baseline_balanced,"{""empty"": 250.0, ""mono"": 1.0, ""smooth"": 0.1, ""corner"": 1000.0}",7948.72,0.0,None
+ablated_empty,"{""empty"": 0.0, ""mono"": 1.0, ""smooth"": 0.1, ""corner"": 1000.0}",5236.24,0.0,empty
+ablated_mono,"{""empty"": 250.0, ""mono"": 0.0, ""smooth"": 0.1, ""corner"": 1000.0}",4040.24,0.0,mono
+ablated_smooth,"{""empty"": 250.0, ""mono"": 1.0, ""smooth"": 0.0, ""corner"": 1000.0}",6285.04,0.0,smooth
+ablated_corner,"{""empty"": 250.0, ""mono"": 1.0, ""smooth"": 0.1, ""corner"": 0.0}",8457.12,0.0,corner
